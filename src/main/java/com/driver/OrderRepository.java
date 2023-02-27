@@ -7,38 +7,37 @@ import java.util.*;
 @Repository
 public class OrderRepository {
 
-    private HashMap<String, Order> OrderMap;
+    private HashMap<String, Order> OrderMap  = new HashMap<String, Order>();
 
-    private HashMap<String, DeliveryPartner> DPartnerMap;
+    private HashMap<String, DeliveryPartner> DPartnerMap = new HashMap<String, DeliveryPartner>();;
 
-    private HashMap<String, List<String>> partnerToOrderMap;
+    private HashMap<String, List<String>> partnerToOrderMap = new HashMap<String, List<String>>();
 
-    private HashMap<String,String> orderToPartnerMap;
+    private HashMap<String,String> orderToPartnerMap = new HashMap<String,String>();
 
 
-    public OrderRepository(){
-        this.OrderMap = new HashMap<String, Order>();
-        this.DPartnerMap = new HashMap<String, DeliveryPartner>();
-        this.partnerToOrderMap = new HashMap<String, List<String>>();
-        this.orderToPartnerMap = new HashMap<String,String>();
 
-    }
-
-    public void addOrder(Order order){
+    public String addOrder(Order order){
         OrderMap.put(order.getId(),order);
+        return "Added successfully";
     }
 
-    public void addPartner(String partnerId){
+    public String addPartner(String partnerId){
         DeliveryPartner deliveryPartner = new DeliveryPartner(partnerId);
         DPartnerMap.put(partnerId,deliveryPartner);
+        return "Added successfully";
     }
 
     public Order getOrderById(String orderId){
-        return OrderMap.get(orderId);
+        if(OrderMap.containsKey(orderId))
+            return OrderMap.get(orderId);
+        return null;
     }
 
     public  DeliveryPartner getPartnerById(String partnerId){
-        return DPartnerMap.get(partnerId);
+        if(DPartnerMap.containsKey(partnerId))
+            return DPartnerMap.get(partnerId);
+        return null;
     }
 
     public void addOrderPartnerPair(String orderId, String partnerId){

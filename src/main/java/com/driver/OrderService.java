@@ -12,12 +12,12 @@ public class OrderService {
     @Autowired
     OrderRepository orderRepository;
 
-    public void addOrder(Order order){
-        orderRepository.addOrder(order);
+    public String addOrder(Order order){
+        return orderRepository.addOrder(order);
     }
 
-    public void addPartner(String partnerId){
-        orderRepository.addPartner(partnerId);
+    public String addPartner(String partnerId){
+        return orderRepository.addPartner(partnerId);
     }
 
     public void addOrderPartnerPair(String orderId, String partnerId){
