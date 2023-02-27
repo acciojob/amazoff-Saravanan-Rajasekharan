@@ -120,46 +120,54 @@ public class OrderRepository {
             }
         }
         int HH = ldt /60;
-        int MM = ldt %60;
+        String hour ="";
 
-        String lastDeliveryTime = HH+":"+MM;
+        if(HH<10) { hour="0"+ HH;
+        } else{ hour = String.valueOf(HH);}
+
+
+        int MM = ldt %60;
+        String min ="";
+
+        if(MM<10) { min="0"+ MM;
+        } else{ min = String.valueOf(MM); }
+
+
+        String lastDeliveryTime = hour+":"+min;
 
         return lastDeliveryTime;
     }
 
     public void deletePartnerById(String partnerId){
-        List<String> orders = new ArrayList<>();
-        if(partnerToOrderMap.containsKey(partnerId)){
-            orders = partnerToOrderMap.get(partnerId);
-            for(String order : orders){
-                if(orderToPartnerMap.containsKey(order)){
-                    // Free all the orders assigned to the partner
-                    orderToPartnerMap.remove(order);
-                }
-            }
-            partnerToOrderMap.remove(partnerId);
+        DPartnerMap.remove(partnerId);
+        List<String> orderList = partnerToOrderMap.getOrDefault(partnerId, new ArrayList<>());
+        ListIterator<String> itr = orderList.listIterator();
+
+        while (itr.hasNext()){
+            String s = itr.next();
+            orderToPartnerMap.remove(s);
         }
-        if(DPartnerMap.containsKey(partnerId)){
-            DPartnerMap.remove(partnerId);
-        }
+        partnerToOrderMap.remove(partnerId);
+
     }
 
     public void deleteOrderById(String orderId){
-        if(orderToPartnerMap.containsKey(orderId)){
-            String partnerId = orderToPartnerMap.get(orderId);
-            List<String> orders = partnerToOrderMap.get(partnerId);
-            orders.remove(orderId);
+       OrderMap.remove(orderId); // Remove the order from the OrderMap
+       String partnerId = orderToPartnerMap.get(orderId); // Get the partnerId from orderId
+        //Remove it from the orderId-partnerId map
+        orderToPartnerMap.remove(orderId);
 
-            partnerToOrderMap.put(partnerId,orders);
+        List<String> orderList = partnerToOrderMap.get(partnerId);
+        ListIterator<String> itr = orderList.listIterator();
 
-            //change the number of Orders in the partner
-            DeliveryPartner partner = DPartnerMap.get(partnerId);
-            partner.setNumberOfOrders(orders.size());
-
-            if(OrderMap.containsKey(orderId)){
-                OrderMap.remove(orderId);
+        while(itr.hasNext()){
+            String s = itr.next();
+            if(s.equals(orderId)){
+                itr.remove();
             }
         }
+        partnerToOrderMap.put(partnerId,orderList);
+
     }
 
 
